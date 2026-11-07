@@ -10,3 +10,7 @@ This is a mathematical research lab, not a production cryptography library or a 
 - Bulk results and generated plots go under ignored `out/`; GitHub Actions uploads them as workflow artifacts.
 - Use small PRs; update tests, mathematical interpretation, and reproducibility instructions together.
 - Avoid CI jobs that automatically push generated files.
+
+## Required pre-PR independent review
+
+Read and follow **[CODE_REVIEW.md](CODE_REVIEW.md)** before opening any new PR. After drafting work on a branch, request **two independent reviewer subagents** with isolated contexts: one for software/systems correctness, one for mathematics/research methodology. Collect their evidence and resolve blockers **before creating the PR**, not after. Do not self-review or claim reviews occurred when subagents were not run. For already-open PRs, complete independent review before merge.

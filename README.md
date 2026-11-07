@@ -65,6 +65,10 @@ docs/EXPERIMENT_TEMPLATE.md  Template for future studies
 AGENTS.md                    Coding agent guidance
 ```
 
+## Independent review policy
+
+Before opening a PR, author agents must follow **[CODE_REVIEW.md](CODE_REVIEW.md)**: finish the draft on a branch, request two isolated subagent reviews (implementation and mathematical methodology), resolve issues, then open the PR with written review evidence. This is a documented protocol, not yet an automated subagent service.
+
 ## Research conventions
 
 - **Replicate before interpreting.** Mathematical equivalences are consistency checks, not independent evidence of new structure.
