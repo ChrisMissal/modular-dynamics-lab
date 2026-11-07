@@ -1,0 +1,23 @@
+# Python / virtual environments
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# Scratch and large-scale experimental outputs (promote reviewed samples to data/)
+out/
+results/
+scratch/
+*.parquet
+*.sqlite
+*.sqlite3
+*.db
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

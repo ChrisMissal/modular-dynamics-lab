@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "study": "wieferich-baseline-v1",
+  "description": "Base-2 exceptional primes and neighboring control primes; bases 3 and 5 are comparisons.",
+  "primes": [7, 1091, 1093, 1097, 3499, 3511, 3517],
+  "bases": [2, 3, 5],
+  "max_power": 3,
+  "harmonic_walk": true,
+  "visualized_primes": [7, 1093, 3511],
+  "seed": null
+}

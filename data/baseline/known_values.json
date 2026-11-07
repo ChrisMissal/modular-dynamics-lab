@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "base": 2,
+  "notes": "Reviewed mathematical golden vectors, not complete experiment output.",
+  "cases": [
+    {
+      "p": 7,
+      "orders": [
+        3,
+        21,
+        147
+      ],
+      "fermat_quotient_mod_p": 2,
+      "harmonic_zero_returns": [],
+      "higher_order_quotient_mod_p": null
+    },
+    {
+      "p": 1093,
+      "orders": [
+        364,
+        364,
+        397852
+      ],
+      "fermat_quotient_mod_p": 0,
+      "harmonic_zero_returns": [
+        273,
+        546
+      ],
+      "higher_order_quotient_mod_p": 487
+    },
+    {
+      "p": 3511,
+      "orders": [
+        1755,
+        1755,
+        6161805
+      ],
+      "fermat_quotient_mod_p": 0,
+      "harmonic_zero_returns": [
+        877,
+        1755
+      ],
+      "higher_order_quotient_mod_p": 51
+    }
+  ]
+}

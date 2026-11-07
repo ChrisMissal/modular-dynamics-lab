@@ -1,0 +1,5 @@
+# Preserve deterministic byte output across Windows and Linux clones
+* text=auto eol=lf
+*.svg text eol=lf
+*.jsonl text eol=lf
+*.json text eol=lf
