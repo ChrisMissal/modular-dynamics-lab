@@ -24,6 +24,7 @@ The known equivalences predict exact flat lifts, fixed points, and returns at `f
 ## Output and limitations
 
 - `feature_vectors.jsonl`: one record per valid pair, sorted by `(p,base)`.
+- `feature_intersections.jsonl`: **exactly** one record for each reduced pair `(ord_p(2)/(p-1), ord_p(3)/(p-1))`, including its multiplicity and full set of contributing primes. The plotted circle radius scales logarithmically with multiplicity; it does not plot a separate dot for each prime.
 - `harmonic_stats.jsonl`: one record per prime, with exact zero intersections.
 - `intersection_summary.json`: population counts and descriptive histograms.
 - `feature_map.svg`: cross-base feature plane and lift-growth signatures.
@@ -39,7 +40,13 @@ python -m modular_dynamics_lab feature-space --config experiments/feature_space_
 python -m modular_dynamics_lab verify --output out/feature_space
 ```
 
-The CI workflow publishes the exact generated plots and records as `modular-dynamics-feature-space-v1`.
+The CI workflow publishes the exact generated plots and records as `modular-dynamics-feature-space-v1`. A separate `ci_provenance.txt` file records the source-branch commit, checked-out commit, and GitHub workflow run ID. This CI metadata is deliberately outside the deterministic mathematical checksum manifest, and will vary by run.
+
+The harmonic diagram dynamically creates one panel for each selected focus prime (up to eight) and sizes each panel for all requested neighbors (up to 30 on each side). These limits are validated rather than silently truncating the request.
+
+**Multiplicity is not a theorem:** Many primes share rational order fractions because the orders divide `p-1`. A picture of overlapping vectors must include their counts; clustering must still be tested against suitable arithmetic controls.
+
+An additional independent CI script checks a reproducible sample spanning the prime range against SymPy `n_order`, and checks harmonic returns using built-in modular inversion instead of the optimized recurrence.
 
 ## Follow-up (not part of this implementation)
 

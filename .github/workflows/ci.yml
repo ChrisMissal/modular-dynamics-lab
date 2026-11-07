@@ -1,58 +1,31 @@
-name: Experiment & CI
-
+name: Reproducibility checks
 on:
   push:
   pull_request:
-  workflow_dispatch:
-
-permissions:
-  contents: read
-
 jobs:
   test:
-    name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.13"]
+        python-version: ['3.11', '3.13']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: python -m pip install -e '.[verify]'
-      - run: python -m unittest discover -s tests -v
-      - run: python scripts/check_sympy.py
-
-  plots:
-    name: Generate research visualizations
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - run: python -m pip install -e .
-      - name: Generate SVGs and datasets
+      - name: Install
+        run: python -m pip install -e '.[verify]'
+      - name: Unit and property tests
+        run: python -m unittest discover -s tests -v
+      - name: Reproduce artifacts
         run: python -m modular_dynamics_lab run --config experiments/baseline.json --output out/baseline
-      - name: Verify generated artifact checksums
+      - name: Validate generated checksums
         run: python -m modular_dynamics_lab verify --output out/baseline
-      - name: Upload reproducible research artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: modular-dynamics-baseline
-          path: out/baseline/
-          if-no-files-found: error
-          retention-days: 30
-      - name: Publish links in workflow summary
-        shell: bash
-        run: |
-          echo "## Generated visualizations" >> "$GITHUB_STEP_SUMMARY"
-          echo "Download **modular-dynamics-baseline** from this run's **Artifacts** section." >> "$GITHUB_STEP_SUMMARY"
-          echo "- cycle_growth.svg — prime-power cycle-growth comparison" >> "$GITHUB_STEP_SUMMARY"
-          echo "- harmonic_walks.svg — modular reciprocal-sum walks" >> "$GITHUB_STEP_SUMMARY"
-          echo "- JSONL datasets, summary, and SHA-256 manifest are included." >> "$GITHUB_STEP_SUMMARY"
+      - name: Match reviewed baseline
+        run: diff -r data/baseline out/baseline
+      - name: Independently check orders with SymPy
+        run: python scripts/check_sympy.py
 
   feature_space:
     name: Study 002 — feature-space vectors & SVGs
@@ -68,6 +41,14 @@ jobs:
         run: python -m modular_dynamics_lab feature-space --config experiments/feature_space_v1.json --output out/feature_space
       - name: Verify generated artifacts
         run: python -m modular_dynamics_lab verify --output out/feature_space
+      - name: Record GitHub source provenance outside deterministic math artifacts
+        env:
+          SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        shell: bash
+        run: |
+          printf "source_commit=%s\n" "$SOURCE_COMMIT" > out/feature_space/ci_provenance.txt
+          printf "checkout_commit=%s\n" "$(git rev-parse HEAD)" >> out/feature_space/ci_provenance.txt
+          printf "workflow_run_id=%s\n" "$GITHUB_RUN_ID" >> out/feature_space/ci_provenance.txt
       - name: Upload research figures and data
         uses: actions/upload-artifact@v4
         with:

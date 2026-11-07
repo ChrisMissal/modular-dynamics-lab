@@ -9,6 +9,7 @@ from pathlib import Path
 
 from . import __version__
 from .core import analyze_prime_base, distinct_prime_factors, fermat_quotient_mod_p
+from .feature_coordinates import coordinate_groups
 from .experiments import json_bytes, jsonl_bytes, sha256
 from .feature_plots import feature_space_svg, harmonic_intersections_svg
 
@@ -87,6 +88,8 @@ def validate_feature_config(config: dict) -> None:
     primes = set(primes_below(limit))
     if focus != sorted(set(focus)) or any(p not in primes for p in focus):
         raise ValueError("focus_primes must be sorted distinct primes under the limit")
+    if len(focus) > 8:
+        raise ValueError("focus_primes supports at most 8 panels")
     radius = config.get("comparison_neighbor_count")
     if type(radius) is not int or not 1 <= radius <= 30:
         raise ValueError("comparison_neighbor_count must be 1..30")
@@ -111,12 +114,21 @@ def compute_feature_data(config: dict) -> tuple[list[dict], list[dict], dict]:
             r["is_primitive_root_mod_p"] = r["orders"][0] == p - 1
             features.append(r)
     base2 = [r for r in features if r["base"] == 2]
+    groups = coordinate_groups(features)
+    shared = [g for g in groups if g["multiplicity"] > 1]
     summary = {
         "schema_version": 1,
         "study": config["study"],
         "odd_prime_count": len(primes),
         "prime_base_vector_count": len(features),
         "harmonic_walk_count": len(harmonics),
+        "coordinate_intersections": {
+            "eligible_primes": sum(g["multiplicity"] for g in groups),
+            "distinct_coordinates": len(groups),
+            "shared_coordinate_groups": len(shared),
+            "primes_at_shared_coordinates": sum(g["multiplicity"] for g in shared),
+            "maximum_multiplicity": max(g["multiplicity"] for g in groups),
+        },
         "prime_limit_exclusive": config["prime_limit_exclusive"],
         "base2_flat_lifts": [r["p"] for r in base2 if r["growth_ratios"][0] == 1],
         "base2_harmonic_return_histogram": {str(k): v for k, v in
@@ -138,6 +150,7 @@ def run_feature_space(config_path: Path, output_dir: Path) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
     outputs = {
         "feature_vectors.jsonl": jsonl_bytes(features),
+        "feature_intersections.jsonl": jsonl_bytes(coordinate_groups(features)),
         "harmonic_stats.jsonl": jsonl_bytes(harmonic),
         "intersection_summary.json": json_bytes(summary),
         "feature_map.svg": feature_space_svg(features, config["focus_primes"]).encode("utf-8"),
