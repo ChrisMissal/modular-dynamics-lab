@@ -57,12 +57,15 @@ src/modular_dynamics_lab/    Exact arithmetic, experiment runner, CLI and SVGs
 experiments/                 Versioned experiment parameters
 tests/                       Reference cases and deterministic pipeline checks
 scripts/                     Reproduction and independent SymPy cross-check
+src/modular_dynamics_lab/feature_*.py  Study 002 feature metrics and SVGs
 data/baseline/               Reviewed small golden reference cases
 docs/MATH.md                 Definitions and known equivalences
 docs/RESEARCH_LOG.md         Hypotheses, limitations and findings
 docs/EXPERIMENT_TEMPLATE.md  Template for future studies
+docs/experiments/           Study-specific protocols
 .github/workflows/           CI checks and generated SVG artifacts
 AGENTS.md                    Coding agent guidance
+CODE_REVIEW.md               Required independent pre-PR review protocol
 ```
 
 ## Independent review policy
@@ -79,3 +82,20 @@ Before opening a PR, author agents must follow **[CODE_REVIEW.md](CODE_REVIEW.md
 - **Use small, reviewable PRs.** A change should explain the mathematical question and its falsifying result.
 
 See [mathematical contract](docs/MATH.md) and [research log](docs/RESEARCH_LOG.md). No third-party license selected yet; choose one before outside contributions.
+
+## Study 002 — prime feature space and harmonic intersections
+
+Study 002 computes exact prime/base features for **all 1,228 odd primes below 10,000** and bases **2, 3, 5** (3,682 coprime prime/base records), alongside half-harmonic zero-return statistics.
+
+Run and verify:
+
+```powershell
+python -m modular_dynamics_lab feature-space --config experiments/feature_space_v1.json --output out/feature_space
+python -m modular_dynamics_lab verify --output out/feature_space
+```
+
+The experiment produces `feature_vectors.jsonl`, `harmonic_stats.jsonl`, `feature_intersections.jsonl`, and `intersection_summary.json`, plus `feature_map.svg` and `harmonic_intersections.svg`. Intersections group **exact reduced rational** coordinates and record the full set of contributing primes and each multiplicity, rather than hiding overlapping points. The SVGs are exploratory visualizations, **not proofs of new mathematical structure**.
+
+GitHub Actions regenerates and checksums the figures and datasets in the **`modular-dynamics-feature-space-v1`** artifact. The workflow also runs an independent deterministic SymPy cross-check and saves a separate `ci_provenance.txt` containing source/checkout commit and run information. Generated data and figures remain uncommitted.
+
+Read the [Study 002 research protocol](docs/experiments/002-feature-space.md) for axes, falsifiability, controls, and interpretation limits. The visual approach is influenced by 3Blue1Brown's emphasis on geometric intuition, without affiliation. For this and future work, follow [the independent review policy](CODE_REVIEW.md) before merging.

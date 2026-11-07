@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "study": "002-feature-space-intersections",
+  "prime_limit_exclusive": 10000,
+  "bases": [2, 3, 5],
+  "max_power": 3,
+  "focus_primes": [1093, 3511],
+  "comparison_neighbor_count": 14,
+  "seed": null
+}
