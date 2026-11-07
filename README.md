@@ -75,3 +75,14 @@ AGENTS.md                    Coding agent guidance
 - **Use small, reviewable PRs.** A change should explain the mathematical question and its falsifying result.
 
 See [mathematical contract](docs/MATH.md) and [research log](docs/RESEARCH_LOG.md). No third-party license selected yet; choose one before outside contributions.
+
+## Study 002 — expanded feature space and modular intersections
+
+This follow-up study enumerates **all 1,228 odd primes below 10,000** with bases 2, 3 and 5 (3,682 coprime prime/base pairs) and analyzes the modular harmonic half-walk at each prime. It uses exact arithmetic and emits deterministic JSONL datasets, two 3Blue1Brown-inspired *static* SVG visualizations, and a checksum manifest.
+
+```powershell
+python -m modular_dynamics_lab feature-space --config experiments/feature_space_v1.json --output out/feature_space
+python -m modular_dynamics_lab verify --output out/feature_space
+```
+
+The [GitHub Actions workflow](.github/workflows/ci.yml) publishes the results as `modular-dynamics-feature-space-v1` with `feature_map.svg` and `harmonic_intersections.svg`. Plots are stored as workflow artifacts rather than automatically committed. See the [experiment protocol](docs/experiments/002-feature-space.md) for exact axes, caveats, and next research questions. The visual treatment is influenced by 3Blue1Brown's emphasis on geometric intuition, not associated with or an imitation of its branding.
